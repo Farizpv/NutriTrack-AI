@@ -13,33 +13,40 @@ A full-stack web application built with Python and Flask that provides AI-powere
 
 ---
 
+## 📖 About The Project
+
+NutriTrack AI is designed to be a modern, intelligent nutrition assistant. Traditional calorie counters require tedious manual entry and provide little personalized feedback. This project solves that by leveraging the power of a large language model (OpenAI API) to understand natural language descriptions of meals, generate custom meal plans, and provide dynamic, goal-oriented insights, making nutrition tracking more intuitive and effective.
+
+The application is built from the ground up using the Flask web framework and is deployed with a production-ready stack, featuring a PostgreSQL database and a Gunicorn web server.
+
+---
+
 ## ✨ Key Features
 
-* **Secure User Authentication:**
-    * Standard email/password registration with server-side validation.
+* **Secure & Flexible User Authentication:**
+    * Standard email/password registration with server-side validation and password confirmation.
     * Seamless "Sign in with Google" (OAuth 2.0) integration.
-    * Full password recovery flow ("Forgot Password") via email.
+    * Full password recovery flow ("Forgot Password") via email using secure, timed tokens.
 
 * **AI-Powered Nutrition Engine (OpenAI):**
     * **Nutrition Analysis:** Get a detailed nutritional breakdown (calories, macros, vitamins, minerals) for any meal by describing it.
     * **Meal Planner:** Generate custom meal plans tailored to user-specified requirements (e.g., "high protein, vegetarian").
-    * **Personalized Recommendations:** The app calculates a unique daily calorie target based on the user's physical details (age, height, weight, gender, activity level) and their primary fitness goal (Weight Loss, Weight Gain, or Maintain Weight).
-    * **Dynamic Daily Insights:** The dashboard provides real-time, personalized tips and feedback based on the user's daily intake versus their goals.
+    * **Personalized Calorie Target:** The app calculates a unique daily calorie target based on the user's physical details (age, height, weight, gender, activity level) and their primary fitness goal (Weight Loss, Weight Gain, or Maintain Weight).
+    * **Dynamic Daily Insights:** The dashboard provides real-time, personalized tips and feedback based on the user's daily intake versus their goals, with a conversational and supportive tone.
 
 * **Dynamic & Interactive Frontend:**
     * A responsive, mobile-friendly interface built with Bootstrap 5.
     * Interactive data visualization for macronutrient breakdown using Chart.js.
     * Consistent and modern dark/themed UI for all pop-up modals and public-facing pages.
-    * Full user profile management, including profile picture uploads.
-    * Complete history of all analyzed foods and saved meal plans.
+    * Full user profile management, including profile picture uploads, username editing, and secure password changes.
+    * Complete, paginated history of all analyzed foods and saved meal plans with view/delete functionality.
 
 ---
 
 ## 🛠️ Tech Stack & Architecture
 
 * **Backend:** Python, Flask, Gunicorn
-* **Database:** PostgreSQL (Production), SQLite (Development)
-* **ORM:** SQLAlchemy
+* **Database:** PostgreSQL (Production, hosted on [Supabase](https://supabase.com/))
 * **AI:** OpenAI API (`gpt-3.5-turbo`)
 * **Frontend:** HTML5, CSS3, JavaScript, Jinja2, Bootstrap 5, Chart.js
 * **Authentication:**
@@ -47,8 +54,10 @@ A full-stack web application built with Python and Flask that provides AI-powere
     * Google OAuth 2.0 handled by Authlib.
     * Secure password hashing with Werkzeug.
     * Timed, secure tokens for password reset with ItsDangerous.
-* **Email:** Flask-Mail with a Google App Password.
-* **Deployment:** Render (Web Service + PostgreSQL)
+* **Email:** Flask-Mail with a Google App Password for SMTP.
+* **Deployment:**
+    * **Application Hosting:** [Render](https://render.com/) (Web Service)
+    * **Database Hosting:** [Supabase](https://supabase.com/) (PostgreSQL)
 
 ---
 
