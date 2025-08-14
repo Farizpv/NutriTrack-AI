@@ -46,7 +46,9 @@
     <h4 class="mb-3">Manage Account</h4>
     <div class="d-flex gap-2 mb-4">
         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editUsernameModal">Edit Username</button>
-        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
+        {% if current_user.password %}
+            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
+        {% endif %}
         <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">Delete Account</button>
     </div>
 </div>

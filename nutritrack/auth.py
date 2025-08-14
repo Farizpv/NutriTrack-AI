@@ -338,6 +338,9 @@ def edit_username():
 @auth.route('/change-password', methods=['POST'])
 @login_required
 def change_password():
+    if not current_user.password:
+        flash("Password cannot be changed for accounts signed in with Google.", "warning")
+        return redirect(url_for('auth.profile'))
     current_password = request.form.get('current_password')
     new_password = request.form.get('new_password')
 
