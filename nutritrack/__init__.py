@@ -26,8 +26,16 @@ def create_app():
     print("✅ OpenAI API key loaded successfully.")
 
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "fallback-secret")
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, '..', 'instance', 'app.db')}"
+    print("--- Checking Environment Variables ---")
+    database_url_from_env = os.getenv("DATABASE_URL")
+    print(f"DATABASE_URL found: {database_url_from_env}")
+    print("------------------------------------")
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+    else:
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, '..', 'instance', 'app.db')}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     app.config['SESSION_PERMANENT'] = True
