@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NutriTrack AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            background-color: #F0F4F3;
+            color: #333;
+        }
+        main {
+            flex: 1;
+        }
+        @media (max-width: 768px) {
+            .navbar .btn {
+                flex: 1 1 45%;  /* Buttons wrap nicely */
+            }
+        }
+        .navbar {
+            background-color: #2F4F4F;
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .navbar a.btn.active {
+            background-color: #A8D5BA;
+            color: #2F4F4F;
+        }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand img {
+            width: 80px;
+            height: 80px;
+        }
+
+        .navbar-brand strong {
+            color: #E0F2F1;
+            font-size: 1.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .navbar a.btn {
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            margin-left: 0.5rem;
+        }
+        .btn
+        {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+        }
+        .btn-outline-light {
+            color: #E0F2F1;
+            border-color: #A8D5BA;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #A8D5BA;
+            color: #2F4F4F;
+        }
+
+        .btn-light {
+            background-color: #A8D5BA;
+            color: #2F4F4F;
+            border: none;
+        }
+
+        .btn-light:hover {
+            background-color: #8BC9A7;
+            color: #2F4F4F;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            border-color: white;
+        }
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.5); /* Light border */
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+
+        .navbar-toggler:hover {
+            border-color: white;
+        }
+
+        .modal-content {
+            background-color: #3e5e5e;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+        .modal-body {
+            background-color: transparent;
+        }
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .modal-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .modal-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        .modal-body strong {
+            color: #A8D5BA;
+        }
+
+        .modal-body ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .modal-body li {
+            color: white;
+        }
+        .modal .p {
+            color: white;
+        }
+        .modal .list-group-item {
+            background-color: transparent;
+            border-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .modal .list-group-item strong {
+            color: white;
+        }
+        .modal .alert-info {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .modal .alert-info strong {
+            color: #A8D5BA;
+        }
+        .modal .alert-secondary {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #d0d0d0;
+        }
+
+ </style>
+</head>
+<body>
+{% if current_user.is_authenticated %}
+<nav class="navbar navbar-expand-lg" style="background-color: #2F4F4F;padding-top: 3rem; padding-bottom: 3rem;">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="{{ url_for('auth.dashboard') }}">
+            <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" width="30" height="30" class="me-2">
+            <strong style="color: #E0F2F1;">NutriTrack AI</strong></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+        <div class="ms-auto d-flex flex-wrap gap-2 mt-2 mt-lg-0">
+                <a href="{{ url_for('auth.nutrition') }}" class="btn btn-outline-light btn-sm {% if request.endpoint == 'auth.nutrition' %}active{% endif %}">Analyze</a>
+                <a href="{{ url_for('auth.plan_meal') }}" class="btn btn-outline-light btn-sm {% if request.endpoint == 'auth.plan_meal' %}active{% endif %}">Meal Planner</a>
+                <a href="{{ url_for('auth.your_meals') }}" class="btn btn-outline-light btn-sm {% if request.endpoint == 'auth.your_meals' %}active{% endif %}">Your Meals</a>
+                <a href="{{ url_for('auth.history') }}" class="btn btn-outline-light btn-sm {% if request.endpoint == 'auth.history' %}active{% endif %}">History</a>
+                <a href="{{ url_for('auth.health_details') }}" class="btn btn-outline-light btn-sm {% if request.endpoint == 'auth.health_details' %}active{% endif %}">Goals</a>
+                <a href="{{ url_for('auth.profile') }}" class="btn btn-outline-light btn-sm {% if request.endpoint == 'auth.profile' %}active{% endif %}">Profile</a>
+                <button class="btn btn-outline-warning btn-md ms-2" onclick="confirmLogout()">Logout</button>
+        </div>
+    </div>
+    </div>
+</nav>
+{% endif %}
+<div class="container mt-5">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="modal fade" id="logoutConfirmModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to logout?
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Yes, Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="bg-dark text-white text-center py-3 mt-auto">
+    <div class="container">
+        <small>&copy; {{ current_year or 2025 }} NutriTrack AI. All rights reserved.</small>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+function confirmLogout() {
+    const modal = new bootstrap.Modal(document.getElementById('logoutConfirmModal'));
+    modal.show();
+}
+</script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>
+

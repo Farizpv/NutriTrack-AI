@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Nutrition Analysis</h2>
+
+    <form method="POST" enctype="multipart/form-data" class="row g-3">
+
+        <div class="col-12">
+            <label class="form-label">Food Name</label>
+            <input type="text" name="food_name" class="form-control" required>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Ingredients (comma-separated)</label>
+            <textarea name="ingredients" class="form-control" rows="3" required></textarea>
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Preparation Method</label>
+            <textarea name="preparation" class="form-control" rows="3" required></textarea>
+        </div>
+        <div class="col-12 mb-3">
+            <button type="submit" class="btn btn-success w-100 py-2 ">Analyze</button>
+        </div>
+
+    </form>
+
+    {% if result %}
+    <hr>
+    <h4 class="mb-4">Nutrition Facts</h4>
+
+    <div class="card p-4 mb-4">
+        <ul class="list-group mb-3">
+            <li class="list-group-item"><strong>Calories:</strong> {{ result.calories.value }} {{ result.calories.unit }}</li>
+            <li class="list-group-item"><strong>Protein:</strong> {{ result.protein.value }} {{ result.protein.unit }}</li>
+            <li class="list-group-item"><strong>Carbohydrates:</strong> {{ result.carbohydrates.value }} {{ result.carbohydrates.unit }}</li>
+            <li class="list-group-item"><strong>Fats:</strong> {{ result.fats.value }} {{ result.fats.unit }}</li>
+            <li class="list-group-item"><strong>Sugars:</strong> {{ result.sugars.value }} {{ result.sugars.unit }}</li>
+            <li class="list-group-item"><strong>Fibre:</strong> {{ result.fibre.value }} {{ result.fibre.unit }}</li>
+        </ul>
+
+        {% if result.ingredients %}
+        <h5>Ingredients:</h5>
+        <ul>
+            {% for ingredient in result.ingredients %}
+            <li>{{ ingredient }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if result.vitamins %}
+        <h5 class="mt-4">Vitamins:</h5>
+        <ul>
+            {% for vitamin, data in result.vitamins.items() %}
+            <li>{{ vitamin }}: {{ data.value }} {{ data.unit }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if result.minerals %}
+        <h5 class="mt-4">Minerals:</h5>
+        <ul>
+            {% for mineral, data in result.minerals.items() %}
+            <li>{{ mineral }}: {{ data.value }} {{ data.unit }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if result.insight %}
+        <div class="alert alert-info mt-4">
+            <strong>Insight:</strong> {{ result.insight }}
+        </div>
+        {% endif %}
+
+        {% if result.notes %}
+        <div class="alert alert-secondary mt-3">
+            <em>Notes:</em> {{ result.notes }}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

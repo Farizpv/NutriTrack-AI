@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Your Profile</h2>
+
+    <div class="card p-4 mb-4 align-items-center gap-4">
+        <img src="{{ profile_pic }}" alt="Profile Picture" class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+
+        <div class="mb-4 align-items-center">
+            <h4>{{ user.username }}</h4>
+            <p>{{ user.email }}</p>
+            <p class="text-muted">Joined on: {{ user.date_joined.strftime("%Y-%m-%d") }}</p>
+            <div class="d-flex justify-content-center mb-3">
+            <form method="POST" enctype="multipart/form-data" class="mb-3">
+                <div class="mb-8">
+                    <input type="file" name="profile_pic" accept="image/*" class="form-control form-control-sm" required>
+                    <button type="submit" class="btn btn-sm btn-success mt-4" >Upload Picture</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row text-center mb-4">
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h6>Total Nutrition Logs</h6>
+                <h4>{{ history_count }}</h4>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h6>Total Meal Plans</h6>
+                <h4>{{ meals_count }}</h4>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h6>Total Calories Tracked</h6>
+                <h4>{{ total_calories }} kcal</h4>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Manage Account</h4>
+    <div class="d-flex gap-2 mb-4">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editUsernameModal">Edit Username</button>
+        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">Delete Account</button>
+    </div>
+</div>
+
+<!-- Edit Username Modal -->
+<div class="modal fade" id="editUsernameModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('auth.edit_username') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Username</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
+                </div>
+                <div class="modal-footer justify-content-end">
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('auth.change_password') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="password" name="current_password" class="form-control mb-3" placeholder="Current Password" required>
+                    <input type="password" name="new_password" class="form-control" placeholder="New Password" required>
+                </div>
+                <div class="modal-footer justify-content-end">
+                    <button type="submit" class="btn btn-warning">Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to permanently delete your account? This action cannot be undone.
+            </div>
+            <div class="modal-footer justify-content-end">
+                <form method="POST" action="{{ url_for('auth.delete_account') }}">
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

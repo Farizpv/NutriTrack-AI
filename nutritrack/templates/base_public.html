@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NutriTrack AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        body {
+            background-color: #2F4F4F;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        .content-wrapper {
+            max-width: 800px;
+            width: 100%;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+        }
+        .form-control {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .form-control::placeholder {
+            color: #a0a0a0;
+        }
+        .form-control:focus {
+            color: white;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-color: #A8D5BA;
+            box-shadow: none;
+        }
+
+        .below-form-link a {
+            color: #A8D5BA;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .below-form-link a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        .form-label {
+            color: white;
+        }
+        .brand-link, .brand-link h1 {
+            color: white;
+            transition: color 0.3s;
+        }
+        .brand-link:hover, .brand-link:hover h1 {
+            color: #A8D5BA;
+        }
+        .brand-link img {
+            width: 80px;
+            height: 80px;
+        }
+        .brand-link h1 {
+            font-size: 2.5rem;
+        }
+        .btn-custom-white {
+            background-color: white;
+            color: #2F4F4F;
+            border: 2px solid white;
+            font-weight: 500;
+        }
+        .btn-custom-white:hover {
+            background-color: #e9e9e9;
+            border-color: #e9e9e9;
+            color: #2F4F4F;
+        }
+        .btn-custom-outline-white {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            font-weight: 500;
+        }
+        .btn-custom-outline-white:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: white;
+        }
+        .btn-custom-transparent {
+            background-color: transparent;
+            color: #ccc; /* Dimmer white for less emphasis */
+            border: none;
+            font-weight: 500;
+        }
+        .btn-custom-transparent:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .text-separator {
+            color: #ccc; /* A slightly dimmer white */
+            font-weight: 500;
+        }
+        .content-wrapper h3 {
+            color: white;
+            font-weight: 600;
+        }
+
+        .content-wrapper p {
+            color: #d0d0d0; /* A slightly dimmer white for paragraphs */
+        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        body { background-color: #2F4F4F; color: white; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 1rem; }
+        .content-wrapper { max-width: 800px; width: 100%; animation: fadeInUp 0.8s ease-out forwards; }
+        .brand-link, .brand-link h1 { color: white; transition: color 0.3s; }
+        .brand-link:hover, .brand-link:hover h1 { color: #A8D5BA; }
+        .brand-link img { width: 80px; height: 80px; }
+        .brand-link h1 { font-size: 2.5rem; margin-bottom: 0; margin-left: 1rem; }
+        .btn-custom-white { background-color: white; color: #2F4F4F; border: 2px solid white; font-weight: 500; }
+        .btn-custom-white:hover { background-color: #e9e9e9; border-color: #e9e9e9; color: #2F4F4F; }
+        .btn-custom-outline-white { background-color: transparent; color: white; border: 2px solid white; font-weight: 500; }
+        .btn-custom-outline-white:hover { background-color: rgba(255, 255, 255, 0.1); color: white; border-color: white; }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="text-center mb-4">
+            <a href="{{ url_for('auth.home') }}" class="brand-link d-flex align-items-center justify-content-center text-decoration-none">
+                <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo">
+                <h1>NutriTrack AI</h1>
+            </a>
+        </div>
+
+        {# THIS BLOCK IS ESSENTIAL FOR ERROR MESSAGES #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="px-md-5"> {# Adds some padding to the alerts #}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

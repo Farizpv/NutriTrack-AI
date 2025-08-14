@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Welcome, {{ username }} 👋</h2>
+
+    {# --- Prompts for user --- #}
+    {% if show_setup_prompt %}
+    <div class="alert alert-warning">
+        <strong>Welcome!</strong> Please <a href="{{ url_for('auth.health_details') }}" class="alert-link">set up your health profile</a> to get personalized calorie recommendations.
+    </div>
+    {% elif show_update_prompt %}
+    <div class="alert alert-info">
+        It's been over a week! Consider <a href="{{ url_for('auth.health_details') }}" class="alert-link">updating your health details</a> for the most accurate recommendations.
+    </div>
+    {% endif %}
+
+    <div class="row mt-4">
+
+        <div class="col-md-4 mb-3">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <h4>{{ total_count }}</h4>
+                    <p class="text-muted">Total Foods Analyzed Today</p>
+                    {% if insight.food_insight %}
+                    <div class="alert alert-light mt-2 small">{{ insight.food_insight }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body d-flex flex-column justify-content-center mt-3">
+                    <h4>{{ totals.calories }} / {{ recommended_calories or 'N/A' }}</h4>
+                    <p class="text-muted">Calories Consumed vs. Target (kcal)</p>
+                    {% if insight.calorie_insight %}
+                    <div class="alert alert-light mt-2 small">{{ insight.calorie_insight }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card text-center shadow-sm h-100 d-flex align-items-center justify-content-center p-3">
+                <div style="width: 200px; height: 200px;">
+                    <canvas id="macroChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <h4 class="mt-4 mb-3">Macronutrients Summary</h4>
+    <ul class="list-group mb-4">
+        <li class="list-group-item"><strong>Protein:</strong> {{ totals.protein }} g</li>
+        <li class="list-group-item"><strong>Carbohydrates:</strong> {{ totals.carbohydrates }} g</li>
+        <li class="list-group-item"><strong>Fats:</strong> {{ totals.fats }} g</li>
+        <li class="list-group-item"><strong>Sugars:</strong> {{ totals.sugars }} g</li>
+        <li class="list-group-item"><strong>Fibre:</strong> {{ totals.fibre }} g</li>
+    </ul>
+
+    {% if insight.tip %}
+    <div class="alert alert-info mt-3">
+        <strong>Tip:</strong> {{ insight.tip }}
+    </div>
+    {% endif %}
+
+    <hr>
+
+    <h4 class="mt-4">Recent Nutrition History</h4>
+    {% if recent_entries %}
+    <ul class="list-group mb-4">
+        {% for item in recent_entries %}
+        <li class="list-group-item d-flex justify-content-between align-items-center mb-3 mt-3">
+            <div>
+                <strong>{{ item.food_name }}</strong> — {{ item.timestamp }}
+            </div>
+            <span class="badge bg-primary">{{ item.calories }} kcal</span>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('auth.history') }}" class="btn btn-outline-primary btn-sm">View Full History</a>
+    {% else %}
+    <p>No recent history. Start analyzing now!</p>
+    {% endif %}
+
+    <hr>
+
+    <h4 class="mt-4">Latest Meal Plan</h4>
+    {% if recent_meal %}
+    <p class="mt-3 mb-3">You've generated a meal plan recently. <a href="{{ url_for('auth.your_meals') }}">View Your Meals</a></p>
+    {% else %}
+    <p class="mt-3 mb-3">No meal plans yet. <a href="{{ url_for('auth.plan_meal') }}" class="btn btn-success btn-md mt-3">Plan a Meal</a></p>
+    {% endif %}
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('macroChart').getContext('2d');
+
+// Determine if valid data exists
+const hasData = {{ total_count }} > 0;
+
+const macroChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['Protein', 'Carbs', 'Fats', 'Sugars', 'Fibre'],
+        datasets: [{
+            data: hasData ? [
+                {{ totals.protein }},
+                {{ totals.carbohydrates }},
+                {{ totals.fats }},
+                {{ totals.sugars }},
+                {{ totals.fibre }}
+            ] : [1, 1, 1, 1, 1],  // Grey dummy values
+            backgroundColor: hasData ? [
+                '#4CAF50', // Protein
+                '#FFC107', // Carbs
+                '#FF5722', // Fats
+                '#03A9F4', // Sugars
+                '#9C27B0'  // Fibre
+            ] : [
+                '#d3d3d3', '#d3d3d3', '#d3d3d3', '#d3d3d3', '#d3d3d3'
+            ],
+            borderColor: '#fff',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    boxWidth: 20,
+                    padding: 10
+                }
+            },
+            tooltip: {
+                enabled: hasData
+            }
+        }
+    }
+});
+</script>
+
+{% endblock %}
