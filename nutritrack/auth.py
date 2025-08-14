@@ -509,3 +509,11 @@ def reset_password(token):
         return redirect(url_for('auth.login'))
 
     return render_template('reset_password.html', token=token)
+
+@auth.route('/create-tables-once')
+def create_tables_once():
+    from . import db
+    from flask import current_app
+    with current_app.app_context():
+        db.create_all()
+    return "Database tables created successfully! You can now remove this route."
