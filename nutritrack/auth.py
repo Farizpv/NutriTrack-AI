@@ -510,10 +510,11 @@ def reset_password(token):
 
     return render_template('reset_password.html', token=token)
 
-@auth.route('/create-tables-once')
+@auth.route('/create-tables-for-real')
 def create_tables_once():
+    """A secret, one-time-use URL to initialize the database tables on Render."""
     from . import db
     from flask import current_app
     with current_app.app_context():
         db.create_all()
-    return "Database tables created successfully! You can now remove this route."
+    return "✅ Database tables created successfully! You can now remove this route from your auth.py file."
