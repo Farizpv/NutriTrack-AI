@@ -513,18 +513,3 @@ def reset_password(token):
 
     return render_template('reset_password.html', token=token)
 
-
-@auth.route('/create-tables-for-real')
-def create_tables_once():
-    """
-    A secret, one-time-use URL to initialize the database tables on Supabase.
-    """
-    # We import these here to make this function self-contained
-    from . import db
-    from flask import current_app
-
-    # The app_context is needed for database operations outside of a request
-    with current_app.app_context():
-        db.create_all()
-
-    return "✅ Database tables created successfully! You can now remove this route from your auth.py file for security."

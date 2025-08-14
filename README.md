@@ -1,32 +1,54 @@
 # NutriTrack AI 🥗
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.0-black.svg)](https://flask.palletsprojects.com/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue.svg)](https://www.postgresql.org/)
 
-A full-stack web application built with Flask and Python that provides AI-powered nutrition analysis, meal planning, and goal-oriented recommendations using the OpenAI API.
+A full-stack web application built with Python and Flask that provides AI-powered nutrition analysis, goal-oriented meal planning, and personalized health insights using the OpenAI API.
 
-**[Live Demo Link Here]** `(<- Link to your deployed Render app)`
+### 🚀 **[View the Live Demo](https://nutritrack-ai-6s55.onrender.com)** 🚀
 
----
-
-## ✨ Features
-
-* **User Authentication:** Secure registration and login for both standard email/password and Google OAuth 2.0.
-* **AI Nutrition Analysis:** Users can input a meal's name, ingredients, and preparation method to receive a detailed nutritional breakdown from the OpenAI API.
-* **AI Meal Planner:** Generate custom meal plans tailored to user-specified requirements (e.g., "high protein, vegetarian").
-* **Goal-Oriented Recommendations:** The app calculates a personalized daily calorie target based on the user's physical details and primary goal (Weight Loss, Weight Gain, Maintain Weight).
-* **Dynamic Dashboard:** An interactive dashboard displays daily totals, macro-nutrient charts (Chart.js), and personalized AI-generated insights.
-* **Full History:** All analyzed meals and generated meal plans are saved to the user's account for future reference.
+*(Note: Free-tier deployment may take a moment to spin up on the first visit.)*
 
 ---
 
-## 🛠️ Tech Stack
+## ✨ Key Features
 
-* **Backend:** Python, Flask, SQLAlchemy, Gunicorn
-* **Database:** PostgreSQL
-* **AI:** OpenAI API
-* **Frontend:** HTML, CSS, JavaScript, Bootstrap 5
-* **Authentication:** Flask-Login (session-based), Authlib (Google OAuth)
-* **Deployment:** Render
+* **Secure User Authentication:**
+    * Standard email/password registration with server-side validation.
+    * Seamless "Sign in with Google" (OAuth 2.0) integration.
+    * Full password recovery flow ("Forgot Password") via email.
+
+* **AI-Powered Nutrition Engine (OpenAI):**
+    * **Nutrition Analysis:** Get a detailed nutritional breakdown (calories, macros, vitamins, minerals) for any meal by describing it.
+    * **Meal Planner:** Generate custom meal plans tailored to user-specified requirements (e.g., "high protein, vegetarian").
+    * **Personalized Recommendations:** The app calculates a unique daily calorie target based on the user's physical details (age, height, weight, gender, activity level) and their primary fitness goal (Weight Loss, Weight Gain, or Maintain Weight).
+    * **Dynamic Daily Insights:** The dashboard provides real-time, personalized tips and feedback based on the user's daily intake versus their goals.
+
+* **Dynamic & Interactive Frontend:**
+    * A responsive, mobile-friendly interface built with Bootstrap 5.
+    * Interactive data visualization for macronutrient breakdown using Chart.js.
+    * Consistent and modern dark/themed UI for all pop-up modals and public-facing pages.
+    * Full user profile management, including profile picture uploads.
+    * Complete history of all analyzed foods and saved meal plans.
+
+---
+
+## 🛠️ Tech Stack & Architecture
+
+* **Backend:** Python, Flask, Gunicorn
+* **Database:** PostgreSQL (Production), SQLite (Development)
+* **ORM:** SQLAlchemy
+* **AI:** OpenAI API (`gpt-3.5-turbo`)
+* **Frontend:** HTML5, CSS3, JavaScript, Jinja2, Bootstrap 5, Chart.js
+* **Authentication:**
+    * Session-based management with Flask-Login.
+    * Google OAuth 2.0 handled by Authlib.
+    * Secure password hashing with Werkzeug.
+    * Timed, secure tokens for password reset with ItsDangerous.
+* **Email:** Flask-Mail with a Google App Password.
+* **Deployment:** Render (Web Service + PostgreSQL)
 
 ---
 
@@ -39,17 +61,20 @@ To get a local copy up and running, follow these simple steps.
 * Python 3.10+
 * A virtual environment tool (like `venv`)
 
-### Installation
+### Installation & Setup
 
 1.  **Clone the repository:**
     ```sh
-    git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
-    cd your-repo-name
+    git clone [https://github.com/](https://github.com/)[your-github-username]/[your-repo-name].git
+    cd [your-repo-name]
     ```
 2.  **Create and activate a virtual environment:**
     ```sh
     python -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    # On Windows:
+    venv\Scripts\activate
+    # On Mac/Linux:
+    source venv/bin/activate
     ```
 3.  **Install the required packages:**
     ```sh
@@ -58,28 +83,38 @@ To get a local copy up and running, follow these simple steps.
 4.  **Set up your environment variables:**
     * Create a `.env` file in the root directory.
     * Add the following keys with your own secret values:
-      ```env
-      SECRET_KEY='your_flask_secret_key'
-      OPENAI_API_KEY='your_openai_api_key'
-      GOOGLE_CLIENT_ID='your_google_client_id'
-      GOOGLE_CLIENT_SECRET='your_google_client_secret'
-      MAIL_SERVER='smtp.gmail.com'
-      MAIL_PORT=587
-      MAIL_USE_TLS=True
-      MAIL_USERNAME='your_gmail_address'
-      MAIL_PASSWORD='your_gmail_app_password'
-      ```
-5.  **Initialize the database:**
+        ```env
+        # Flask & Security
+        SECRET_KEY='your_strong_flask_secret_key'
+
+        # OpenAI
+        OPENAI_API_KEY='your_openai_api_key'
+
+        # Google OAuth
+        GOOGLE_CLIENT_ID='your_google_client_id'
+        GOOGLE_CLIENT_SECRET='your_google_client_secret'
+
+        # Gmail for Password Reset
+        MAIL_SERVER='smtp.gmail.com'
+        MAIL_PORT=587
+        MAIL_USE_TLS=True
+        MAIL_USERNAME='your_gmail_address'
+        MAIL_PASSWORD='your_16_digit_gmail_app_password'
+        ```
+5.  **Initialize the local database:**
     * Start the Flask shell:
-      ```sh
-      flask shell
-      ```
+        ```sh
+        flask shell
+        ```
     * Inside the shell, create the database tables:
-      ```python
-      >>> from app import db
-      >>> db.create_all()
-      >>> exit()
-      ```
+        ```python
+        >>> from nutritrack import db, create_app
+        >>> app = create_app()
+        >>> with app.app_context():
+        ...     db.create_all()
+        ...
+        >>> exit()
+        ```
 6.  **Run the application:**
     ```sh
     flask run
@@ -90,4 +125,4 @@ To get a local copy up and running, follow these simple steps.
 
 ## 📜 License
 
-Distributed under the MIT License. See `LICENSE` file for more information.
+Distributed under the MIT License.
